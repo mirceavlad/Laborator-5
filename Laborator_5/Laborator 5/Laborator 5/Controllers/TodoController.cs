@@ -10,37 +10,25 @@ namespace Laborator_5.Controllers
     [Route("todo")]
     public class TodoController : ControllerBase
     {
-        private readonly DataContext context;
-        public TodoController (DataContext contex)
+        private readonly ITodoRepository _repository;
+        public TodoController (TodoRepository repository)
         {
-            this.context = contex;
+            _repository = repository;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Todo>> Get()
-        {
-            return context.Todos.ToList();
-        }
+        public ActionResult<List<Todo>> Get() => _repository.GetAll().ToList();
 
         [HttpGet("{id}")]
-        public ActionResult<Todo> Get(int id)
-        {
-            return context.Todos.Find(id);
-        }
+        public ActionResult<Todo> Get(int id) => _repository.GetById(id);
 
         [Route("/active")]
         [HttpGet]
-        public ActionResult<IEnumerable<Todo>> GetActive()
-        {
-            return context.Todos.Where(td => td.IsDone == false).ToList();
-        }
+        public ActionResult<List<Todo>> GetActive() => _repository.GetActive().ToList();
 
         [Route("/done")]
         [HttpGet]
-        public ActionResult<IEnumerable<Todo>> GetDone()
-        {
-            return context.Todos.Where(td => td.IsDone == true).ToList();
-        }
+        public ActionResult<IEnumerable<Todo>> GetDone() => _repository.GetDone().ToList();
 
     }
 
